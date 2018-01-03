@@ -1,0 +1,13 @@
+.Rhistory
+Youtube2Text/**
+*.pickle
+*.p
+*.png
+logs/**
+models/**
+Loss_Functions/**
+c3d/**
+MSRVTT/**
+language_model/scoring_results/**
+language_model/generated_captions/**
+language_model/word_embeddings/**
