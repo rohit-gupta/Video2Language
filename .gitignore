@@ -11,3 +11,4 @@ MSRVTT/**
 language_model/scoring_results/**
 language_model/generated_captions/**
 language_model/word_embeddings/**
+YouTube2Text/**
