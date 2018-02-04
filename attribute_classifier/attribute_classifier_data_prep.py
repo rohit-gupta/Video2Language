@@ -4,7 +4,7 @@ import sys
 
 folder = "../Youtube2Text/youtubeclips-dataset/"
 attributes_file = "../tag_generator/attributes_long.txt"
-captions_file = "matched_all_descriptions.csv"
+captions_file = "cleaned_descriptions.csv"
 
 video_attributes = {}
 
