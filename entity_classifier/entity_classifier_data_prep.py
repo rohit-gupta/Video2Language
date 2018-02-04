@@ -3,7 +3,7 @@ import pickle
 import sys
 
 folder = "../Youtube2Text/youtubeclips-dataset/"
-entities_file = "../entities_long.txt"
+entities_file = "../tag_generator/entities_long.txt"
 captions_file = "matched_all_descriptions.csv"
 
 video_entities = {}
