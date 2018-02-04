@@ -13,8 +13,19 @@ grep -E ",clean," video-descriptions.csv | awk -F, '{print $1"_"$2"_"$3","$8}' >
 sed 's/ /,/g' youtube_mapping.txt > youtube_mapping.csv
 join -t ',' <(sort youtube_mapping.csv) <(sort clean_descriptions.csv) | awk -F, '{print $2","$3}' > matched_descriptions.csv
 
+# Clean descriptions
+rm -f matched_descriptions_symbolfree.csv
+rm -f bad_descriptions.csv 
+rm -f cleaned_descriptions.csv
+
+sed 's/\.$//' matched_descriptions.csv | sed 's/\!$//' | sed 's/"/ /g' | tr '`' "'" | tr "[" " " | tr "]" " " | tr "/" " " |  tr "(" " " | tr ")" " " | tr "  " " " > matched_descriptions_symbolfree.csv
+cat matched_descriptions_symbolfree.csv | grep "[^0-9A-Za-z,\. '&-]" > bad_descriptions.csv 
+grep -v -x -f bad_descriptions.csv matched_descriptions_symbolfree.csv > cleaned_descriptions.csv
+echo `wc -l bad_descriptions.csv` "Captions deleted"
+echo `wc -l cleaned_descriptions.csv` "Captions to be used"
+
 # Create Vocabulary file
-sed -e 's/<[^>]*>//g' matched_descriptions.csv | awk -F',' '{print $2}' | tr " " "\n" | sed '/^$/d' | sort | uniq -ci | sed 's/^ *//g' | sort -Vr | sed 's/ /,/g' > vocabulary_clean.txt
+sed -e 's/<[^>]*>//g' cleaned_descriptions.csv | awk -F',' '{print $2}' | tr " " "\n" | sed '/^$/d' | sort | uniq -ci | sed 's/^ *//g' | sort -Vr | sed 's/ /,/g' > vocabulary.txt
 
 # Make file with list of videonames
 ls *avi | sort -V > vidnames.txt

@@ -46,9 +46,10 @@ video_fps = {}
 for x in video_fps_list:
 	video_fps[x[0].split(".")[0]] = float(x[1])
 
-video_folder = "Youtube2Text/youtubeclips-dataset/"
+video_folder = "YouTube2Text/youtubeclips-dataset/"
 frames_folder = video_folder + "frames/vid*"
 videos = glob(frames_folder)
+
 
 video_frames = []
 video_names = []
