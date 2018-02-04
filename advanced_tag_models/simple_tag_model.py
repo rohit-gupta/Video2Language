@@ -34,7 +34,7 @@ train_tags = np.array([tag_vectors.get(video,np.zeros(NUM_TAGS)) for video in tr
 test_tags  = np.array([tag_vectors.get(video,np.zeros(NUM_TAGS)) for video in test_list])
 
 
-features = pickle.load(open("../average_frame_features.pickle","rb"))
+features = pickle.load(open("../frame_features/average_frame_features.pickle","rb"))
 NUM_FEATURES = features[features.keys()[0]].shape[0]
 
 train_features = np.array([features.get(video,np.zeros(NUM_TAGS)) for video in train_list])

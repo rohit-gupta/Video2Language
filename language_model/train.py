@@ -49,7 +49,7 @@ with open("vocabulary_10.p", "wb") as f:
 
 # Load Captions
 #fname = folder + "descriptions_normalized.csv"
-fname = folder + "matched_all_descriptions.csv"
+fname = folder + "cleaned_descriptions.csv"
 with open(fname) as f:
     content = f.readlines()
 
@@ -113,7 +113,7 @@ video_action_vectors = pickle.load(open("../advanced_tag_models/action_simple_pr
 video_attribute_vectors = pickle.load(open("../advanced_tag_models/attribute_simple_predicted_tags.pickle", "rb"))
 
 # video_frame_features = pickle.load(open("../frame_features.pickle", "rb"))
-video_frame_features = pickle.load(open("../average_frame_features.pickle", "rb"))
+video_frame_features = pickle.load(open("../frame_features/average_frame_features.pickle", "rb"))
 
 # Remove videos for which clean captions aren't available
 # available_vids = set(video_entity_vectors.keys()).intersection(set(video_action_vectors.keys()).intersection(set(video_attribute_vectors.keys()).intersection(set(video_frame_features.keys()))))
@@ -200,7 +200,7 @@ from keras.optimizers import RMSprop
 # Language Model
 previous_words_input = Input(shape=(PREV_WORDS_LENGTH,), dtype='float32')
 previous_words_embedded = Embedding(output_dim=EMBEDDING_DIM, input_dim=NUM_WORDS, mask_zero=True, dtype='float32', name="word_embedding")(previous_words_input)
-lstm1_output = LSTM(256, return_sequences=True, implementation=2, dropout=0.2)(previous_words_embedded)
+lstm1_output = LSTM(256, return_sequences=True, implementation=2, dropout=0.1, recurrent_dropout=0.1)(previous_words_embedded)
 words_embedding_space = TimeDistributed(Dense(EMBEDDING_DIM))(lstm1_output)
 
 # Features Model
@@ -218,7 +218,7 @@ tags_embedding_space = RepeatVector(PREV_WORDS_LENGTH)(tags_merged)
 
 # Word Generation Model
 lang_model_input = keras.layers.concatenate([words_embedding_space, features_embedding_space, tags_embedding_space])
-lstm_output = LSTM(512, return_sequences=False, implementation=2, dropout=0.2)(lang_model_input) # fast_gpu implementation
+lstm_output = LSTM(512, return_sequences=False, implementation=2, dropout=0.1, recurrent_dropout=0.1)(lang_model_input) # fast_gpu implementation
 generated_word = Dense(NUM_WORDS, activation='softmax')(lstm_output)
 
 beam_model = Model(inputs=[entities_input, actions_input, attributes_input, single_frame_input, previous_words_input], outputs=generated_word)
@@ -227,15 +227,15 @@ beam_model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics
 
 beam_model.summary()
 
-model_name = 'medvoc_simplepredtags_batch128_low_dropout_norecurrentdropout_avgfeat_thresholded'
+model_name = 'medvoc_simplepredtags_batch128_lowdropout_avgfeat_threshold'
 
 # Train the model
 csv_logger = CSVLogger('../logs/'+model_name+'.log')
 loss_checkpointer = ModelCheckpoint(filepath='../models/'+model_name+'_minvalloss.h5', monitor='val_loss', mode='min', verbose=1, save_best_only=True)
 acc_checkpointer = ModelCheckpoint(filepath='../models/'+model_name+'_maxvalacc.h5', monitor='val_acc', mode='max', verbose=1, save_best_only=True)
-#TensorBoard_checkpointer = TensorBoard(log_dir='./tensorboardlogs', histogram_freq=1, batch_size=128, write_graph=True, write_grads=False, write_images=False, embeddings_freq=1, embeddings_layer_names=["word_embedding"], embeddings_metadata="word_embedding_metadata.tsv")
+#TensorBoard_checkpointer = TensorBoard(log_dir='./tensorboardlogs', histogram_freq=1, batch_size=128, write_graph=True, write_grads=False, write_images=False, embeddings_freq=1, embeddings_layer_names=["word_embedding"], embeddings_metadata=folder + "word_embedding_metadata.tsv")
 
-epoch_steps = (int(X_vgg_train.shape[0]*0.9)/128)/10
+#epoch_steps = (int(X_vgg_train.shape[0]*0.9)/128)/10
 
 #beam_model.load_weights("../models/beam_model_basic_maxvalacc_smallvoc_longtags_03.h5")
 beam_model.fit([X_ent_train, X_act_train, X_att_train, X_vgg_train, X_prev_words_train], Y_next_word_train, epochs=10, batch_size=128, validation_split=0.10,  callbacks=[csv_logger, loss_checkpointer, acc_checkpointer])

@@ -34,6 +34,10 @@ ls *avi | sort -V > vidnames.txt
 # Run Python script to generate script to extract video frames
 python ../../extract_frame_gen.py > ../../extract_frames.sh
 
-
-
 cd ../..
+
+mkdir logs
+mkdir models
+
+mkdir -p language_model/results
+mkdir -p language_model/annotations

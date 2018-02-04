@@ -34,8 +34,8 @@ else:
     video_entity_vectors = pickle.load(open("../entity_classifier/entity_vectors_long.pickle", "rb"))
     video_action_vectors = pickle.load(open("../action_classifier/action_vectors_long.pickle", "rb"))
     video_attribute_vectors = pickle.load(open("../attribute_classifier/attribute_vectors_long.pickle", "rb"))
-# video_frame_features = pickle.load(open("../frame_features.pickle", "rb"))
-video_frame_features = pickle.load(open("../average_frame_features.pickle", "rb"))
+
+video_frame_features = pickle.load(open("../frame_features/average_frame_features.pickle", "rb"))
 
 # Remove videos for which clean captions aren't available
 # available_vids = set(video_entity_vectors.keys()).intersection(set(video_action_vectors.keys()).intersection(set(video_attribute_vectors.keys()).intersection(set(video_frame_features.keys()))))
@@ -131,10 +131,10 @@ def sample(preds, temperature=1.0):
         probas = np.random.multinomial(1, preds, 1)
         return np.argmax(probas)
 
-results_folder = "scoring_results/coco/coco-caption-master/"
+results_folder = "."
 
 # # Load All Captions
-fname = folder + "matched_all_descriptions.csv"
+fname = folder + "cleaned_descriptions.csv"
 with open(fname) as f:
     content = f.readlines()
 
