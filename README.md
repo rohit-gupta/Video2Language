@@ -3,30 +3,36 @@ Generating video descriptions using deep learning
 
 ```shell
 source activate tensorflow_p27
+conda install scikit-learn
 git clone https://github.com/rohit-gupta/V2L-MSVD.git
 cd V2L-MSVD
 ```
 
-### Should take about 2 minutes
+### Download data: should take about 2 minutes
 ```shell
 bash fetch-data.sh
 ```
 
-### ETA: ~5 minutes
+### Preprocess text data: ETA: ~5 minutes
 ```shell
 bash preprocess-data.sh
 ```
 
-### ETA: ~30 minutes
+### Extract frames from the Videos: ETA: ~30 minutes
 ```shell
 bash extract_frames.sh
 ```
 
-### ETA: ~1hr 
+### ETA: ~50 Minutes 
 ```shell
 bash run-feature-extractor.sh
 ```
 
 ### Tag Model
-
+```shell
+bash run-simple-tag-prediction-model.sh
+```
 ### Language Model
+```shell
+bash run-language-model.sh
+```
