@@ -2,7 +2,7 @@ import numpy as np
 import pickle
 import sys
 
-folder = "../Youtube2Text/youtubeclips-dataset/"
+folder = "../YouTube2Text/youtubeclips-dataset/"
 attributes_file = "../tag_generator/attributes_long.txt"
 captions_file = "cleaned_descriptions.csv"
 

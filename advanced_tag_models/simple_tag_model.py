@@ -2,7 +2,7 @@ import argparse
 import pickle
 import numpy as np
 
-video_folder = "../Youtube2Text/youtubeclips-dataset/"
+video_folder = "../YouTube2Text/youtubeclips-dataset/"
 
 # Load Train/Test split
 fname = video_folder + "train.txt"
@@ -23,6 +23,7 @@ parser.add_argument('-t', action='store', dest='tag_type', help='(action/entity/
 parser.add_argument('-s', action='store', dest='model_size', type=int, nargs='+', help='Hidden State Sizes')
 results = parser.parse_args()
 
+print "Simple MLP Tag prediction network"
 
 tag_vectors = pickle.load(open("../"+results.tag_type+"_classifier/" + results.tag_type + "_vectors_long.pickle", "rb"))
 # entity_vectors = pickle.load(open("../entity_classifier/entity_vectors_long.pickle", "rb"))
@@ -37,9 +38,13 @@ test_tags  = np.array([tag_vectors.get(video,np.zeros(NUM_TAGS)) for video in te
 features = pickle.load(open("../frame_features/average_frame_features.pickle","rb"))
 NUM_FEATURES = features[features.keys()[0]].shape[0]
 
-train_features = np.array([features.get(video,np.zeros(NUM_TAGS)) for video in train_list])
-test_features  = np.array([features.get(video,np.zeros(NUM_TAGS)) for video in test_list])
+print "NUM_FEATURES =", NUM_FEATURES
 
+train_features = np.array([features.get(video,np.zeros(NUM_FEATURES)) for video in train_list])
+test_features  = np.array([features.get(video,np.zeros(NUM_FEATURES)) for video in test_list])
+
+
+print "Features shape =", train_features.shape
 
 
 

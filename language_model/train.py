@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 import sys
 
-folder = "../Youtube2Text/youtubeclips-dataset/"
+folder = "../YouTube2Text/youtubeclips-dataset/"
 
 # Load Vocabulary
 fname = folder + "vocabulary.txt"
@@ -148,7 +148,7 @@ for video,caption in encoded_captions:
 			X_act_train.append(np.where(video_action_vectors.get(video,np.zeros(NUM_ACTIONS)) > 0.015, 1, 0))
 			X_att_train.append(np.where(video_attribute_vectors.get(video,np.zeros(NUM_ATTRIBUTES)) > 0.015, 1, 0))
 			#X_vgg_train.append(video_frame_features[video][0]) # For VGG Single Frame Features
-			X_vgg_train.append(video_frame_features[video]) # For ResNet Avg Frame Features
+			X_vgg_train.append(video_frame_features.get(video, np.zeros(NUM_FEATURES))) # For ResNet Avg Frame Features
 			X_prev_words_train.append(caption[0:idx+1])
 			Y_next_word_train.append(word)
 

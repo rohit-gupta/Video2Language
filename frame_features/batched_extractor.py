@@ -156,7 +156,8 @@ predicted_features = feature_extract_model.predict_generator(all_videos_generato
 video_feature_vectors = {}
 
 for idx,video in enumerate(video_names):
-	video_feature_vectors[video] = predicted_features[idx] 
+	if idx < len(predicted_features):
+		video_feature_vectors[video] = predicted_features[idx] 
 
 pickle.dump(video_feature_vectors, open("average_frame_features.pickle", "wb"))
 

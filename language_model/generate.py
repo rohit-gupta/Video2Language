@@ -4,7 +4,7 @@ import copy
 import json
 import argparse
 
-folder = "../Youtube2Text/youtubeclips-dataset/"
+folder = "../YouTube2Text/youtubeclips-dataset/"
 
 
 fname = folder + "test.txt"
@@ -12,6 +12,10 @@ with open(fname) as f:
     content = f.readlines()
 
 test = [x.strip() for x in content]
+
+no_clean_captions = set(['vid1690', 'vid1458', 'vid1657', 'vid1772', 'vid1515', 'vid1445', 'vid1446', 'vid1797', 'vid1855', 'vid1724', 'vid1787', 'vid1605', 'vid1455', 'vid1722', 'vid1746', 'vid1912', 'vid1301', 'vid1868', 'vid1887'])
+
+test = list(set(test) - no_clean_captions)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-t', action='store', dest='tag_type', help='(predicted/groundtruth) Type of Tags to use in predictions')
@@ -131,7 +135,7 @@ def sample(preds, temperature=1.0):
         probas = np.random.multinomial(1, preds, 1)
         return np.argmax(probas)
 
-results_folder = "."
+results_folder = "./"
 
 # # Load All Captions
 fname = folder + "cleaned_descriptions.csv"
@@ -151,6 +155,7 @@ correct_annotations['annotations'] = []
 
 for video in test:
 	correct_annotations['images'].append({'license': 1, 'url': 'https://www.youtube.com/watch?v=' + video, 'file_name': video+".avi", 'height': 360, 'width': 640, 'date_captured': u'2013-11-14 11:18:45', 'id': test.index(video)})
+
 
 count = 0 
 for video,caption in all_captions:
@@ -250,8 +255,8 @@ for idx,video in enumerate(test):
 greedy_captions.write(json.dumps(greedy_annotations, indent=4, sort_keys=True))
 greedy_captions.close()
 
-print "python score.py -r annotations/correct_captions_ref.json -t", "results/greedy_search_"+results.model_file+results.tag_type+".json"
-print "python score.py -r annotations/correct_captions_ref.json -t", "results/beam_search_"+results.model_file+results.tag_type+".json"
+# print "python score.py -r annotations/correct_captions_ref.json -t", "results/greedy_search_"+results.model_file+results.tag_type+".json"
+# print "python score.py -r annotations/correct_captions_ref.json -t", "results/beam_search_"+results.model_file+results.tag_type+".json"
 
 
 # hot_captions = open("scoring_results/hot_captions_batched.sgm","w")
