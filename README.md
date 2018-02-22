@@ -1,7 +1,7 @@
 # V2L-MSVD
 Generating video descriptions using deep learning in Keras
 
-## Start with AWS Ubuntu Deep Learning AMI on a EC2 p2.xlarge instance. (or better, p2.xlarge costs $0.9/hour on-demand and ~$0.3/hour as a spot instance)
+* Start with AWS Ubuntu Deep Learning AMI on a EC2 p2.xlarge instance. (or better, p2.xlarge costs $0.9/hour on-demand and ~$0.3/hour as a spot instance)
 
 ```shell
 source activate tensorflow_p27
