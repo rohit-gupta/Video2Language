@@ -17,9 +17,19 @@ bash fetch-data.sh
 ```
 
 ### Preprocess text data: ETA ~5 minutes
+
+If you only want to use Verified descriptions -> 
+
+```shell
+bash preprocess-data.sh CleanOnly 
+```
+
+If you want to use both verified and unverified descriptions -> 
+
 ```shell
 bash preprocess-data.sh
 ```
+
 
 ### Extract frames from the Videos: ETA ~30 minutes
 ```shell
