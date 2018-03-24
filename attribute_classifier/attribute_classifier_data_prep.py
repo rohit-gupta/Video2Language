@@ -3,7 +3,7 @@ import pickle
 import sys
 
 folder = "../YouTube2Text/youtubeclips-dataset/"
-attributes_file = "../tag_generator/attributes_long.txt"
+attributes_file = "../tag_generator/attribute_long.txt"
 captions_file = "cleaned_descriptions.csv"
 
 video_attributes = {}
