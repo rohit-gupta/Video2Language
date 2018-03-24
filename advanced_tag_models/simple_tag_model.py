@@ -50,7 +50,7 @@ print "Features shape =", train_features.shape
 
 from keras.layers import Input, Dense,Dropout
 from keras.models import Model
-from keras.callbacks import CSVLogger, ModelCheckpoint
+from keras.callbacks import CSVLogger, ModelCheckpoint, ReduceLROnPlateau
 from keras import regularizers
 
 inputs = Input(shape=(NUM_FEATURES,))
@@ -64,11 +64,12 @@ model = Model(inputs=inputs, outputs=predictions)
 model.compile(optimizer='rmsprop',loss='binary_crossentropy', metrics=['accuracy'])
 
 
+lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, min_lr=0.001)
 csv_logger = CSVLogger('../logs/'+results.tag_type+'_simple_tag_model_regularized.log')
 checkpointer = ModelCheckpoint(filepath='../models/'+results.tag_type+'_simple_tag_model_regularized.h5', verbose=1, save_best_only=True)
 
 
-model.fit(train_features, train_tags, batch_size=32,epochs=100,validation_split=0.1,shuffle=True, callbacks=[csv_logger,checkpointer])  # starts training
+model.fit(train_features, train_tags, batch_size=32,epochs=200,validation_split=0.1,shuffle=True, callbacks=[csv_logger,checkpointer, lr_reducer])  # starts training
 
 model.load_weights("../models/"+results.tag_type+"_simple_tag_model_regularized.h5")
 

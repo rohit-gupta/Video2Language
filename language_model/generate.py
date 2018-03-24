@@ -3,6 +3,7 @@ import numpy as np
 import copy
 import json
 import argparse
+from model import get_language_model
 
 folder = "../YouTube2Text/youtubeclips-dataset/"
 
@@ -13,19 +14,28 @@ with open(fname) as f:
 
 test = [x.strip() for x in content]
 
-no_clean_captions = set(['vid1690', 'vid1458', 'vid1657', 'vid1772', 'vid1515', 'vid1445', 'vid1446', 'vid1797', 'vid1855', 'vid1724', 'vid1787', 'vid1605', 'vid1455', 'vid1722', 'vid1746', 'vid1912', 'vid1301', 'vid1868', 'vid1887'])
+# no_clean_captions = set(['vid1690', 'vid1458', 'vid1657', 'vid1772', 'vid1515', 'vid1445', 'vid1446', 'vid1797', 'vid1855', 'vid1724', 'vid1787', 'vid1605', 'vid1455', 'vid1722', 'vid1746', 'vid1912', 'vid1301', 'vid1868', 'vid1887'])
 
-test = list(set(test) - no_clean_captions)
+# test = list(set(test) - no_clean_captions)
+
+
+
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-t', action='store', dest='tag_type', help='(predicted/groundtruth) Type of Tags to use in predictions')
+parser.add_argument('-p', action='store', dest='tag_type', help='(predicted/groundtruth) Type of Tags to use in predictions')
+parser.add_argument('-t', action='store', dest='tag_threshold', type= float, help='Threshold for tag binarization')
+parser.add_argument('-s', action='store', dest='lstm_size', type= int, help='Number of hidden units in LSTM model')
 parser.add_argument('-m', action='store', dest='model_file', help='Model File Name')
 # parser.add_argument('-d', action='store', dest='gpu', help='GPU to use')
 results = parser.parse_args()
 
+TAG_TYPE = results.tag_type
+THRESHOLD = results.tag_threshold
+LSTM_SIZE = results.lstm_size
+
 
 # Load single frame feature vectors and attribute/entity/action vectors
-if results.tag_type == 'predicted':
+if TAG_TYPE == 'predicted':
     video_entity_vectors = pickle.load(open("../advanced_tag_models/entity_simple_predicted_tags.pickle", "rb"))
     video_action_vectors = pickle.load(open("../advanced_tag_models/action_simple_predicted_tags.pickle", "rb"))
     video_attribute_vectors = pickle.load(open("../advanced_tag_models/attribute_simple_predicted_tags.pickle", "rb"))
@@ -65,18 +75,18 @@ vocabulary_words = [x[1] for x in vocabulary]
 
 #Load the model with pre-trained weights
 TRUNCATED_CAPTION_LEN = 15 + 2 
-PREV_WORDS_LENGTH = TRUNCATED_CAPTION_LEN - 1
+NUM_PREV_WORDS = TRUNCATED_CAPTION_LEN - 1
 EMBEDDING_DIM = 256
-NUM_WORDS = len(vocabulary_words)
+VOCABULARY_SIZE = len(vocabulary_words)
 
 # Load the video features
 for video in test:
-    X_ent_test.append(np.where(np.array(video_entity_vectors.get(video, np.zeros(NUM_ENTITIES))) > 0.015, 1, 0))
-    X_act_test.append(np.where(np.array(video_action_vectors.get(video, np.zeros(NUM_ACTIONS))) > 0.015, 1, 0))
-    X_att_test.append(np.where(np.array(video_attribute_vectors.get(video, np.zeros(NUM_ATTRIBUTES))) > 0.015, 1, 0))
+    X_ent_test.append(np.where(np.array(video_entity_vectors.get(video, np.zeros(NUM_ENTITIES))) > THRESHOLD, 1, 0))
+    X_act_test.append(np.where(np.array(video_action_vectors.get(video, np.zeros(NUM_ACTIONS))) > THRESHOLD, 1, 0))
+    X_att_test.append(np.where(np.array(video_attribute_vectors.get(video, np.zeros(NUM_ATTRIBUTES))) > THRESHOLD, 1, 0))
     # X_vgg_test.append(np.array(video_frame_features[video][0]))
     X_vgg_test.append(np.array(video_frame_features[video]))
-    X_prev_words_begin.append([vocabulary_words.index("<bos>")] + [0]*(PREV_WORDS_LENGTH - 1))
+    X_prev_words_begin.append([vocabulary_words.index("<bos>")] + [0]*(NUM_PREV_WORDS - 1))
 
 
 X_ent_test  = np.array(X_ent_test)
@@ -85,42 +95,8 @@ X_att_test  = np.array(X_att_test)
 X_vgg_test  = np.array(X_vgg_test)
 X_prev_words_begin  = np.array(X_prev_words_begin)
 
-# import keras
-import keras # For keras.layers.concatenate
-from keras.layers import Input, Dense, RepeatVector, Embedding
-from keras.layers.wrappers import TimeDistributed
-from keras.layers.recurrent import LSTM
-from keras.models import Model
 
-
-# Language Model
-previous_words_input = Input(shape=(PREV_WORDS_LENGTH,), dtype='float32')
-previous_words_embedded = Embedding(output_dim=EMBEDDING_DIM, input_dim=NUM_WORDS, mask_zero=True, dtype='float32')(previous_words_input)
-lstm1_output = LSTM(256, return_sequences=True, implementation=2, dropout=0.5, recurrent_dropout=0.5)(previous_words_embedded)
-words_embedding_space = TimeDistributed(Dense(EMBEDDING_DIM))(lstm1_output)
-
-# Features Model
-single_frame_input = Input(shape=(NUM_FEATURES,),   dtype='float32')
-features_embedding_space_single = Dense(EMBEDDING_DIM, activation='relu', dtype='float32')(single_frame_input)
-features_embedding_space = RepeatVector(PREV_WORDS_LENGTH)(features_embedding_space_single)
-
-# Tags Model
-entities_input     = Input(shape=(NUM_ENTITIES,),   dtype='float32')
-actions_input      = Input(shape=(NUM_ACTIONS,),    dtype='float32')
-attributes_input   = Input(shape=(NUM_ATTRIBUTES,), dtype='float32')
-tags_merged = keras.layers.concatenate([entities_input, actions_input, attributes_input])
-tags_embedding_space = RepeatVector(PREV_WORDS_LENGTH)(tags_merged)
-
-
-# Word Generation Model
-lang_model_input = keras.layers.concatenate([words_embedding_space, features_embedding_space, tags_embedding_space])
-lstm_output = LSTM(512, return_sequences=False, implementation=2, dropout=0.5, recurrent_dropout=0.5)(lang_model_input) # fast_gpu implementation
-generated_word = Dense(NUM_WORDS, activation='softmax')(lstm_output)
-
-beam_model = Model(inputs=[entities_input, actions_input, attributes_input, single_frame_input, previous_words_input], outputs=generated_word)
-beam_model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-
-beam_model.summary()
+beam_model = get_language_model(NUM_PREV_WORDS, VOCABULARY_SIZE, EMBEDDING_DIM, NUM_FEATURES, NUM_ENTITIES, NUM_ACTIONS, NUM_ATTRIBUTES, LSTM_SIZE, 0.0, 0.0) # Dropout is inactive during inference
 
 beam_model.load_weights("../models/"+results.model_file+".h5")
 
@@ -175,7 +151,7 @@ def indices(k):
 
 
 def greedy_search(captioning_model, prev_words_input, other_inputs):
-    for itr in range(PREV_WORDS_LENGTH-1):
+    for itr in range(NUM_PREV_WORDS-1):
         predictions = captioning_model.predict(other_inputs + [prev_words_input])
         for idx,video in enumerate(test):
             prev_words_input[idx][itr+1] = np.argmax(predictions[idx])
@@ -194,7 +170,7 @@ def beam_search(captioning_model, prev_words_input, other_inputs, k):
             top_k_predictions[version][idx][1] = np.argsort(predictions[idx])[-(version+1)]
             top_k_score[version][idx] = np.sort(predictions[idx])[-(version+1)]
 
-    for itr in range(2,PREV_WORDS_LENGTH):
+    for itr in range(2,NUM_PREV_WORDS):
         top_k_copy = copy.deepcopy(top_k_predictions)
         print top_k_predictions[0][0]
         print top_k_predictions[1][0]

@@ -17,8 +17,9 @@ def preprocess_image(img_path):
 	return x
 
 
-NUM_FRAMES = 160
-FRAME_RATE = 8
+NUM_FRAMES = 40
+FRAME_RATE = 2
+BATCH_SIZE = 16
 
 def load_videos(video_ids, video_folder, video_fps_dict):
 	frames = []
@@ -109,11 +110,11 @@ videos = sorted(videos)
 video_names = [(video_path.split("/")[-1]) for video_path in videos]
 
 # Create generator
-all_videos_generator = MSVDSequence(video_names, video_folder=videos_folder, fps_dict=video_fps, batch_size=4)
+all_videos_generator = MSVDSequence(video_names, video_folder=videos_folder, fps_dict=video_fps, batch_size=BATCH_SIZE)
 
 NUM_STEPS = len(all_videos_generator)
 
-print "Frames will be extracted for", NUM_STEPS * 4, "Videos"
+print "Frames will be extracted for", NUM_STEPS * BATCH_SIZE, "Videos"
 
 
 from keras.applications.resnet50 import ResNet50

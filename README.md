@@ -41,6 +41,18 @@ bash extract_frames.sh
 bash run-feature-extractor.sh
 ```
 
+If at this stage you get an error that contains 
+
+```shell
+/lib/libstdc++.so.6: version `CXXABI_1.3.x' not found
+```
+
+You can fix it with:
+
+```shell
+cd ~/anaconda3/envs/tensorflow_p27/lib && mv libstdc++.a stdcpp_bkp && mv libstdc++.so stdcpp_bkp && mv libstdc++.so.6 stdcpp_bkp && mv libstdc++.so.6.0.19 stdcpp_bkp/  && mv libstdc++.so.6.0.19-gdb.py stdcpp_bkp/  && mv libstdc++.so.6.0.21 stdcpp_bkp/  && mv libstdc++.so.6.0.24 stdcpp_bkp/ && cd -
+```
+
 ### Tag Model: ETA ~5 Minutes
 ```shell
 bash run-simple-tag-prediction-model.sh
