@@ -1,0 +1,96 @@
+from keras.layers import TimeDistributed
+from keras.layers import Input, LSTM, Dense
+from keras.models import Model
+from keras.preprocessing import image
+from keras.applications.resnet50 import ResNet50
+from keras.applications.resnet50 import preprocess_input
+from keras.layers.core import Lambda
+from keras import backend as K
+
+import numpy as np
+from glob import glob
+import pickle
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-v', action='store', dest='video_folder', help='Path to folder with video frames')
+parser.add_argument('-f', action='store', dest='fps', type=float, help='FPS for the video')
+results = parser.parse_args()
+
+
+# add a layer that returns the average over timesteps
+def timestepaverage(x):
+    x = K.mean(x, axis=1)
+    x = K.l2_normalize(x, axis=1)
+    return x
+
+def timestepaverage_output_shape(input_shape):
+    shape = list(input_shape)
+    assert len(shape) == 3  # (Batch Size x Time Steps x Feature Size)
+    return tuple((shape[0],shape[2]))
+
+# TimeStepAverage = Lambda(timestepaverage, output_shape=timestepaverage_output_shape)
+
+def preprocess_image(img_path):
+	img = image.load_img(img_path,	 target_size=(224, 224))
+	x = image.img_to_array(img)
+	x = np.expand_dims(x, axis=0)
+	x = preprocess_input(x)
+	return x
+
+NUM_FRAMES = 40
+FRAME_RATE = 2
+
+video = results.video_folder
+fps = results.fps
+
+video_name = (video.split("/")[-1]).split(".")[0] # Extract video name from path
+
+frame_files = sorted(glob(video +"/*.jpg"))
+num_frames = len(frame_files)
+gap = int(round(fps/FRAME_RATE)) # If FPS = 30, FRAME_RATE = 3, Frames at ID 0,10,20,30 ... are sampled
+frame_data = []
+for idx,frame_file in enumerate(frame_files):
+    if len(frame_data) >= NUM_FRAMES:
+        break
+    if idx%gap == 0:
+        frame_data.append(preprocess_image(frame_file)[0])
+actual_frame_length = len(frame_data)
+# If Video is shorter than 8 seconds repeat the short video
+if len(frame_data) < NUM_FRAMES: 
+    if NUM_FRAMES/len(frame_data) > 1: # Video is < 1/2 of 8 Seconds
+        num_repeats = NUM_FRAMES/len(frame_data) - 1
+        for _ in range(num_repeats):
+            for itr in range(len(frame_data[:actual_frame_length])):
+                frame_data.append(frame_data[:actual_frame_length][itr])
+    dup_frame_length = len(frame_data)
+    if NUM_FRAMES/len(frame_data) == 1 and NUM_FRAMES > len(frame_data): # Video is slightly smaller than 8 Seconds
+        for itr in range(0, NUM_FRAMES -len(frame_data)):
+            frame_data.append(frame_data[itr])
+if len(frame_data) != NUM_FRAMES:
+    print og_frame_length, num_repeats, dup_frame_length, len(frame_data)
+    raise Exception, 'Incorrect number of frames sampled'
+
+frame_data = np.array(frame_data)
+video_frames = np.expand_dims(frame_data, axis=0)
+
+
+# Workaround
+K.set_learning_phase(1)
+
+video_input = Input(shape=(NUM_FRAMES, 224, 224, 3))
+convnet_model = ResNet50(weights='imagenet', include_top=False, pooling='avg')
+encoded_frame_sequence = TimeDistributed(convnet_model)(video_input)
+# encoded_video = TimeStepAverage()(encoded_frame_sequence)
+encoded_video = Lambda(timestepaverage, output_shape=timestepaverage_output_shape)(encoded_frame_sequence)
+
+feature_extract_model = Model(inputs=video_input, outputs=encoded_video)
+feature_extract_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+# feature_extract_model.summary()
+
+predicted_features = feature_extract_model.predict_on_batch(video_frames)
+
+video_feature_vectors = {}
+video_feature_vectors[video_name] = predicted_features[0] 
+
+pickle.dump(video_feature_vectors, open("average_frame_features.pickle", "wb"))
