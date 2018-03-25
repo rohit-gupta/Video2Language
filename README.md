@@ -99,3 +99,8 @@ cd ~/anaconda3/envs/tensorflow_p27/lib && mv libstdc++.a stdcpp_bkp && mv libstd
 You can fix it by upgrading Tensorflow. 
 
 Reference for this problem: https://github.com/rohit-gupta/Video2Language/issues/3
+
+
+## Results
+
+![Language Model][langmodel.png]
