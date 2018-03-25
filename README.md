@@ -103,4 +103,4 @@ Reference for this problem: https://github.com/rohit-gupta/Video2Language/issues
 
 ## Results
 
-![Language Model][https://raw.githubusercontent.com/rohit-gupta/Video2Language/master/langmodel.png]
+![Language Model](https://raw.githubusercontent.com/rohit-gupta/Video2Language/master/langmodel.png)
