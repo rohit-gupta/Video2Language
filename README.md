@@ -112,7 +112,6 @@ Table below is sourced from papers [1](https://arxiv.org/abs/1505.00487), [2](ht
 | ------------- |:-------------:| 
 | Mean Pooled (AlexNet Features)                        | 26.9 | 
 | Mean Pooled (VGG Features)                            | 27.7 |
-| Mean Pooled (AlexNet COCO pre-trained Features)       | 29.1 |
 | Mean Pooled (GoogleNet Features)                      | 28.7 |
 | Ours (Mean Pooled ResNet50 Features + Predicted Tags) | 29.0 |
 
