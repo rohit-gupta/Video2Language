@@ -11,6 +11,8 @@ git clone https://github.com/rohit-gupta/V2L-MSVD.git
 cd V2L-MSVD
 ```
 
+*If you are not using AWS, ensure you have a recent version of Keras and Tensorflow installed and working, and also install scikit-learn and scikit-image if you want to train tag prediction models*
+
 ## Using a pre-trained video captioning model
 
 #### Use a video from YouTube
