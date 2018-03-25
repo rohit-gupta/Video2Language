@@ -106,7 +106,7 @@ Reference for this problem: https://github.com/rohit-gupta/Video2Language/issues
 The video captioning model here uses Mean Pooled ResNet50 features of video frames along with Object, Action and Attribute tags predicted by a simple feedforward network. 
 
 
-Table below is sourced from papers [1](https://arxiv.org/abs/1505.00487), [2](https://arxiv.org/abs/1412.4729) and [3](https://arxiv.org/abs/1502.08029)
+The Table below compares the performance of our model with some other models that also rely on mean pooled frame features. It is sourced from papers [1](https://arxiv.org/abs/1505.00487), [2](https://arxiv.org/abs/1412.4729) and [3](https://arxiv.org/abs/1502.08029). 
 
 | Model        | METEOR score on MSVD |
 | ------------- |:-------------:| 
@@ -114,6 +114,8 @@ Table below is sourced from papers [1](https://arxiv.org/abs/1505.00487), [2](ht
 | Mean Pooled (VGG Features)                            | 27.7 |
 | Mean Pooled (GoogleNet Features)                      | 28.7 |
 | Ours (Mean Pooled ResNet50 Features + Predicted Tags) | 29.0 |
+
+
 
 
 ![Language Model](https://raw.githubusercontent.com/rohit-gupta/Video2Language/master/langmodel.png)
