@@ -13,12 +13,21 @@ cd V2L-MSVD
 
 ## Using a pre-trained video captioning model
 
+#### Use a video from YouTube
+
 ```shell
 bash fetch-pretrained-model.sh
 bash fetch-youtube-video.sh https://www.youtube.com/watch?v=cKWuNQAy2Sk
 bash process-youtube-video.sh 
 ```
 
+#### Use a video from your local disk
+
+```shell
+bash fetch-pretrained-model.sh
+bash fetch-from-localpath.sh /home/ubuntu/vid1.mp4
+bash process-youtube-video.sh 
+```
 
 ## Training your own video captioning model
 
