@@ -68,11 +68,11 @@ bash run-feature-extractor.sh
 
 #### Tag Model: ETA ~5 Minutes
 ```shell
-bash run-simple-tag-prediction-model.sh
+bash train-simple-tag-prediction-model.sh
 ```
 #### Train Language Model: ETA ~50 minutes (Can be killed around ~25 minutes after 5 Epochs)
 ```shell
-bash run-language-model.sh
+bash train-language-model.sh
 ```
 
 #### Score Language Model: ETA ~5 minutes
