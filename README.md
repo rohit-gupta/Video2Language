@@ -22,6 +22,7 @@ cd V2L-MSVD
 
 ```shell
 bash fetch-pretrained-model.sh
+sudo bash install-youtube-dl.sh
 bash fetch-youtube-video.sh https://www.youtube.com/watch?v=cKWuNQAy2Sk
 bash process-youtube-video.sh 
 ```
