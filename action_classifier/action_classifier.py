@@ -53,7 +53,7 @@ action_model.add(Dense(num_actions, activation='sigmoid'))
 
 action_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
-# Save a visualization of the model and print summary
+# Save a visualization of the model and printsummary
 #from keras.utils import plot_model
 #plot_model(action_model, to_file='action_classifier_model.png')
 action_model.summary()

@@ -53,7 +53,7 @@ attribute_model.add(Dense(num_attributes, activation='sigmoid'))
 
 attribute_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
-# Save a visualization of the model and print summary
+# Save a visualization of the model and printsummary
 #from keras.utils import plot_model
 #plot_model(attribute_model, to_file='attribute_classifier_model.png')
 attribute_model.summary()

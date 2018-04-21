@@ -262,7 +262,7 @@ average_precision = dict()
 # A "micro-average": quantifying score on all classes jointly
 precision["micro"], recall["micro"], _ = precision_recall_curve(test_tags.ravel(), augmented_test_preds.ravel())
 average_precision["micro"] = average_precision_score(test_tags, augmented_test_preds, average="micro")
-print 'Average precision score, micro-averaged over all classes:', average_precision["micro"]
+print'Average precision score, micro-averaged over all classes:', average_precision["micro"]
 
 # Plot uAP v Recall curve
 plt.switch_backend("agg")

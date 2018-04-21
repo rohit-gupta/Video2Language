@@ -75,7 +75,7 @@ count = 0
 
 for video in sorted(videos):
 	if count % 100 == 0:
-		print (int(100*round(count/float(len(videos)),2)), "% Data Loaded")
+		print(int(100*round(count/float(len(videos)),2)), "% Data Loaded")
 	video_name = (video.split("/")[-1]).split(".")[0] # Extract video name from path
 	fps = video_fps[video_name]
 	frame_files = sorted(glob(video +"/*.jpg"))

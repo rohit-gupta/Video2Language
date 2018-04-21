@@ -20,6 +20,6 @@ cocoEval = COCOEvalCap(coco, cocoRes)
 # evaluate results
 cocoEval.evaluate()
 
-# print output evaluation scores
+# printoutput evaluation scores
 for metric, score in cocoEval.eval.items():
     print('%s: %.3f'%(metric, score))
