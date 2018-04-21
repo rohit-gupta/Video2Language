@@ -60,7 +60,7 @@ def action_vector_to_list(action_vec, p):
 	return [actions[i] for i in indices]
 
 
-# print "p,  Hamming Loss,  Avg Labels, Avg Correct Labels"
+# print ("p,  Hamming Loss,  Avg Labels, Avg Correct Labels")
 # for p in np.arange(0.0, 0.6, 0.02):
 # 	# Compute Hamming Loss
 # 	total_predicted = 0
@@ -73,11 +73,11 @@ def action_vector_to_list(action_vec, p):
 # 	hamming_loss = float(total_predicted - total_correct)/total_predicted
 # 	avg_labels = total_predicted/float(len(test))
 # 	avg_correct_labels = avg_labels*(1 - hamming_loss)
-# 	print  p, hamming_loss, avg_labels, avg_correct_labels
+# 	print  (p, hamming_loss, avg_labels, avg_correct_labels)
 
 
 # TODO 
 # Create crude sentences for checking BLEU/METEOR
 for idx,video in enumerate(test):
 		predicted_labels = set(action_vector_to_list(preds[idx],0.25))
-		print video," ".join(predicted_labels)
+		print (video," ".join(predicted_labels))
