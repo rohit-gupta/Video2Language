@@ -3,6 +3,7 @@ import numpy as np
 import pickle
 import sys
 import argparse
+from __future__ import print_function
 
 from model import get_language_model
 
@@ -26,7 +27,7 @@ if results.recurrent_dropout:
     RECURRENT_DROPOUT = results.recurrent_dropout
 else:
     RECURRENT_DROPOUT = results.dropout
-    
+
 
 if results.min_repeat:
     MIN_REPEAT = results.min_repeat
@@ -96,9 +97,9 @@ TRUNCATED_CAPTION_LEN = 15 + 2
 MIN_CAPTION_LEN = 4 + 2
 VOCABULARY_SIZE += 4 # <BOS>, <EOS>, <unk>, <pad>
 
-print "MAX_CAPTION_LEN: ", MAX_CAPTION_LEN
-print "TRUNCATED_CAPTION_LEN: ", TRUNCATED_CAPTION_LEN
-print "VOCABULARY_SIZE: ", VOCABULARY_SIZE
+print("MAX_CAPTION_LEN: ", MAX_CAPTION_LEN)
+print("TRUNCATED_CAPTION_LEN: ", TRUNCATED_CAPTION_LEN)
+print("VOCABULARY_SIZE: ", VOCABULARY_SIZE)
 
 def one_hot_encode(sentence,lexicon):
     if len(sentence) > TRUNCATED_CAPTION_LEN:
@@ -119,9 +120,9 @@ for video, caption in captions:
     if len(caption) >= MIN_CAPTION_LEN:
         encoded_captions.append((video, one_hot_encode(['<bos>'] + caption.split(" ") + ['<eos>'],vocabulary_words)))
 
-print encoded_captions[0]
-print encoded_captions[1]
-print encoded_captions[3]
+print(encoded_captions[0])
+print(encoded_captions[1])
+print(encoded_captions[3])
 
 
 # Load Train/Test split
@@ -155,11 +156,11 @@ video_frame_features = pickle.load(open("../frame_features/average_frame_feature
 # test = set(test).intersection(available_vids)
 # train = set(train).intersection(available_vids)
 
-print str(len(train)) + " Training Videos"
-print str(len(test)) + " Test Videos"
+print(str(len(train)) + " Training Videos")
+print(str(len(test)) + " Test Videos")
 
 
-# Read feature sizes from data 
+# Read feature sizes from data
 NUM_ENTITIES   = video_entity_vectors[video_entity_vectors.keys()[0]].shape[0]
 NUM_ACTIONS    = video_action_vectors[video_action_vectors.keys()[0]].shape[0]
 NUM_ATTRIBUTES = video_attribute_vectors[video_attribute_vectors.keys()[0]].shape[0]
@@ -188,8 +189,8 @@ for video,caption in encoded_captions:
             Y_next_word_train.append(word)
 
 for itr in range(TRUNCATED_CAPTION_LEN):
-    print X_prev_words_train[itr]
-    print Y_next_word_train[itr]
+    print(X_prev_words_train[itr])
+    print(Y_next_word_train[itr])
 
 
 # Padding
@@ -201,8 +202,8 @@ for idx,prev_words in enumerate(X_prev_words_train):
     Y_next_word_train[idx][temp_word_id] = 1.0
 
 for itr in range(TRUNCATED_CAPTION_LEN):
-    print X_prev_words_train[itr]
-    print Y_next_word_train[itr]
+    print(X_prev_words_train[itr])
+    print(Y_next_word_train[itr])
 
 X_ent_train = np.array(X_ent_train)
 X_act_train = np.array(X_act_train)
@@ -212,8 +213,8 @@ X_prev_words_train = np.array(X_prev_words_train)
 Y_next_word_train  = np.array(Y_next_word_train)
 
 
-print X_ent_train.shape, X_act_train.shape, X_att_train.shape, X_vgg_train.shape
-print X_prev_words_train.shape, Y_next_word_train.shape
+print(X_ent_train.shape, X_act_train.shape, X_att_train.shape, X_vgg_train.shape)
+print(X_prev_words_train.shape, Y_next_word_train.shape)
 
 # MAX_CAPTION_LENGTH = Y_train.shape[1]
 # NUM_WORDS = Y_train.shape[2]

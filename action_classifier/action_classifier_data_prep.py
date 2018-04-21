@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 import sys
+from __future__ import print_function
 
 folder = "../YouTube2Text/youtubeclips-dataset/"
 actions_file = "../tag_generator/action_long.txt"
@@ -17,9 +18,9 @@ MIN_COUNT=30
 actions = []
 for word,count in actions_all:
 	if int(count) >= MIN_COUNT:
-		actions.append(word) 
+		actions.append(word)
 
-print "Using " + str(len(actions)) + " actions out of total " + str(len(actions_all)) + " actions"
+print("Using " + str(len(actions)) + " actions out of total " + str(len(actions_all)) + " actions")
 
 # read in cleaned up captions
 with open(folder+captions_file) as f:

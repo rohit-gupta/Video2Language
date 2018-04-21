@@ -1,4 +1,5 @@
 import nltk
+from __future__ import print_function
 
 fname = "correct_captions.txt"
 with open(fname) as f:
@@ -15,7 +16,7 @@ greedy = [x.strip() for x in content]
 
 average = 0.0
 max_score = 0.0
-max_idx = 0 
+max_idx = 0
 for idx in range(len(correct)):
 	hypothesis = greedy[idx].split(" ")
 	reference = correct[idx].split(" ")
@@ -25,7 +26,7 @@ for idx in range(len(correct)):
 		max_idx = idx
 	average += BLEUscore
 
-print "BLEU 4", average/len(correct)
+print("BLEU 4", average/len(correct))
 
-print greedy[max_idx]
-print correct[max_idx]
+print(greedy[max_idx])
+print(correct[max_idx])

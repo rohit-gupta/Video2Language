@@ -1,6 +1,7 @@
 #import numpy as np
 import pickle
 import numpy as np
+from __future__ import print_function
 
 folder = "Youtube2Text/youtubeclips-dataset/"
 
@@ -50,7 +51,7 @@ entity_model.add(Dense(num_entities, activation='sigmoid'))
 
 entity_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
-# Save a visualization of the model and print summary
+# Save a visualization of the model and printsummary
 #from keras.utils import plot_model
 #plot_model(entity_model, to_file='entity_classifier_model.png')
 entity_model.summary()
@@ -67,8 +68,8 @@ preds = entity_model.predict(X_test)
 
 from sklearn.metrics import hamming_loss
 
-preds_binarized = preds 
+preds_binarized = preds
 preds_binarized[preds>=0.5] = 1
 preds_binarized[preds<0.5] = 0
 
-print "Hamming Loss: ", hamming_loss(Y_test, preds_binarized)
+print("Hamming Loss: ", hamming_loss(Y_test, preds_binarized))

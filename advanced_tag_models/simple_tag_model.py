@@ -1,6 +1,8 @@
 import argparse
 import pickle
 import numpy as np
+from __future__ import print_function
+
 
 video_folder = "../YouTube2Text/youtubeclips-dataset/"
 
@@ -23,7 +25,7 @@ parser.add_argument('-t', action='store', dest='tag_type', help='(action/entity/
 parser.add_argument('-s', action='store', dest='model_size', type=int, nargs='+', help='Hidden State Sizes')
 results = parser.parse_args()
 
-print "Simple MLP Tag prediction network"
+print("Simple MLP Tag prediction network")
 
 tag_vectors = pickle.load(open("../"+results.tag_type+"_classifier/" + results.tag_type + "_vectors_long.pickle", "rb"))
 # entity_vectors = pickle.load(open("../entity_classifier/entity_vectors_long.pickle", "rb"))
@@ -38,13 +40,13 @@ test_tags  = np.array([tag_vectors.get(video,np.zeros(NUM_TAGS)) for video in te
 features = pickle.load(open("../frame_features/average_frame_features.pickle","rb"))
 NUM_FEATURES = features[features.keys()[0]].shape[0]
 
-print "NUM_FEATURES =", NUM_FEATURES
+print("NUM_FEATURES =", NUM_FEATURES)
 
 train_features = np.array([features.get(video,np.zeros(NUM_FEATURES)) for video in train_list])
 test_features  = np.array([features.get(video,np.zeros(NUM_FEATURES)) for video in test_list])
 
 
-print "Features shape =", train_features.shape
+print("Features shape =", train_features.shape)
 
 
 
@@ -109,7 +111,7 @@ average_precision = dict()
 # A "micro-average": quantifying score on all classes jointly
 precision["micro"], recall["micro"], _ = precision_recall_curve(actual_tags.ravel(), pred_tags.ravel())
 average_precision["micro"] = average_precision_score(actual_tags, pred_tags, average="micro")
-print 'Average precision score, micro-averaged over all classes:', average_precision["micro"]
+print('Average precision score, micro-averaged over all classes:', average_precision["micro"])
 
 # Plot uAP v Recall curve
 plt.switch_backend("agg")
@@ -123,4 +125,3 @@ plt.ylim([0.0, 1.05])
 plt.xlim([0.0, 1.0])
 plt.title('Average precision score, micro-averaged over all classes: AUC={0:0.2f}'.format(average_precision["micro"]))
 plt.savefig('PR_Curve_simple_model_regularized_'+results.tag_type+'.png')
-

@@ -1,6 +1,7 @@
 #import numpy as np
 import pickle
 import numpy as np
+from __future__ import print_function
 
 folder = "../Youtube2Text/youtubeclips-dataset/"
 
@@ -60,7 +61,7 @@ def attribute_vector_to_list(attribute_vec, p):
 	return [attributes[i] for i in indices]
 
 
-# print "p,  Hamming Loss,  Avg Labels, Avg Correct Labels"
+# print("p,  Hamming Loss,  Avg Labels, Avg Correct Labels")
 # for p in np.arange(0.0, 0.6, 0.02):
 # 	# Compute Hamming Loss
 # 	total_predicted = 0
@@ -73,11 +74,11 @@ def attribute_vector_to_list(attribute_vec, p):
 # 	hamming_loss = float(total_predicted - total_correct)/total_predicted
 # 	avg_labels = total_predicted/float(len(test))
 # 	avg_correct_labels = avg_labels*(1 - hamming_loss)
-# 	print  p, hamming_loss, avg_labels, avg_correct_labels
+# 	print(p, hamming_loss, avg_labels, avg_correct_labels)
 
 
-# TODO 
+# TODO
 # Create crude sentences for checking BLEU/METEOR
 for idx,video in enumerate(test):
 		predicted_labels = set(attribute_vector_to_list(preds[idx],0.3))
-		print video," ".join(predicted_labels)
+		print(video," ".join(predicted_labels))

@@ -1,6 +1,7 @@
 from random import shuffle
 import numpy as np
 import pickle
+from __future__ import print_function
 
 import keras
 from keras.layers import Input, Dense, RepeatVector
@@ -55,9 +56,9 @@ TRUNCATED_CAPTION_LEN = 10 + 2
 MIN_CAPTION_LEN = 4
 NUM_WORDS += 3 # <BOS>, <EOS>, <unk>
 
-print "MAX_CAPTION_LEN: ", MAX_CAPTION_LEN
-print "TRUNCATED_CAPTION_LEN: ", TRUNCATED_CAPTION_LEN
-print "NUM_WORDS: ", NUM_WORDS
+print("MAX_CAPTION_LEN: ", MAX_CAPTION_LEN)
+print("TRUNCATED_CAPTION_LEN: ", TRUNCATED_CAPTION_LEN)
+print("NUM_WORDS: ", NUM_WORDS)
 
 def one_hot_encode(sentence,lexicon):
 	sentence = sentence[:TRUNCATED_CAPTION_LEN]
@@ -108,11 +109,11 @@ available_vids = set(video_entity_vectors.keys()).intersection(set(video_action_
 test = set(test).intersection(available_vids)
 train = set(train).intersection(available_vids)
 
-print str(len(train)) + " Training Videos"
-print str(len(test)) + " Test Videos"
+print(str(len(train)) + " Training Videos")
+print(str(len(test)) + " Test Videos")
 
 
-# Read feature sizes from data 
+# Read feature sizes from data
 NUM_ENTITIES   = video_entity_vectors[video_entity_vectors.keys()[0]].shape[0]
 NUM_ACTIONS    = video_action_vectors[video_action_vectors.keys()[0]].shape[0]
 NUM_ATTRIBUTES = video_attribute_vectors[video_attribute_vectors.keys()[0]].shape[0]
@@ -226,7 +227,7 @@ def sample(preds, temperature=1.0):
 	return np.argmax(probas)
 
 for idx in range(5):
-	print "".join(['*~']*40)
+	print("".join(['*~']*40))
 	greedy_sentence = []
 	hot_sentence = []
 	correct_sentence = []
@@ -234,6 +235,6 @@ for idx in range(5):
 		greedy_sentence.append(vocabulary[np.argmax(word)][1])
 		hot_sentence.append(vocabulary[sample(word)][1])
 		correct_sentence.append(vocabulary[np.argmax(Y_test[idx][wordnum])][1])
-	print " ".join(correct_sentence)
-	print " ".join(greedy_sentence)
-	print " ".join(hot_sentence)
+	print(" ".join(correct_sentence))
+	print(" ".join(greedy_sentence))
+	print(" ".join(hot_sentence))

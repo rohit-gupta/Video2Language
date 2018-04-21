@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 import sys
+from __future__ import print_function
 
 folder = "../YouTube2Text/youtubeclips-dataset/"
 attributes_file = "../tag_generator/attribute_long.txt"
@@ -17,9 +18,9 @@ MIN_COUNT=25
 attributes = []
 for word,count in attributes_all:
 	if int(count) >= MIN_COUNT:
-		attributes.append(word) 
+		attributes.append(word)
 
-print "Using " + str(len(attributes)) + " attributes out of total " + str(len(attributes_all)) + " attributes"
+print("Using " + str(len(attributes)) + " attributes out of total " + str(len(attributes_all)) + " attributes")
 
 # read in cleaned up captions
 with open(folder+captions_file) as f:
