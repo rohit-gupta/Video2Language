@@ -36,7 +36,7 @@ Y_test = np.array([video_action_vectors[video] for video in test])
 num_actions = video_action_vectors[video_action_vectors.keys()[0]].shape[0]
 feature_size = video_frame_features[video_frame_features.keys()[0]].shape[1]
 
-print "Training action classifier model ..."
+print("Training action classifier model ...")
 
 # Define the action classifier model
 from keras.models import Sequential
@@ -73,4 +73,4 @@ preds_binarized = preds
 preds_binarized[preds>=0.5] = 1
 preds_binarized[preds<0.5] = 0
 
-print "Hamming Loss: ", hamming_loss(Y_test, preds_binarized)
+print("Hamming Loss: ", hamming_loss(Y_test, preds_binarized))
