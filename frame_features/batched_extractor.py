@@ -49,7 +49,7 @@ def load_videos(video_ids, video_folder, video_fps_dict):
 					frame_data.append(frame_data[itr])
 		if len(frame_data) != NUM_FRAMES:
 			print(actual_frame_length, num_repeats, dup_frame_length, len(frame_data))
-			raise Exception, 'Incorrect number of frames sampled'
+			raise Exception('Incorrect number of frames sampled')
 		frame_data = np.array(frame_data)
 		frames.append(frame_data)
 	return np.array(frames)
