@@ -1,10 +1,12 @@
+from __future__ import print_function
+
+
 from keras.utils import Sequence
 import json
 import re
 import pickle
 import argparse
 from glob import glob
-from __future__ import print_function
 
 import numpy as np
 from keras.preprocessing import image

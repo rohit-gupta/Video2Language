@@ -1,3 +1,4 @@
+from __future__ import print_function
 from keras.layers import TimeDistributed
 from keras.layers import Input, LSTM, Dense
 from keras.models import Model
@@ -6,7 +7,6 @@ from keras.applications.resnet50 import ResNet50
 from keras.applications.resnet50 import preprocess_input
 from keras.layers.core import Lambda
 from keras import backend as K
-from __future__ import print_function
 
 import numpy as np
 from glob import glob
