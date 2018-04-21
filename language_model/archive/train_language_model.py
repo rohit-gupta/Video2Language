@@ -1,5 +1,7 @@
 import pickle
 import numpy as np
+from __future__ import print_function
+
 
 folder = "../Youtube2Text/youtubeclips-dataset/"
 
@@ -28,11 +30,11 @@ available_vids = set(video_entity_vectors.keys()).intersection(set(video_action_
 test = set(test).intersection(available_vids)
 train = set(train).intersection(available_vids)
 
-print str(len(train)) + " Training Videos"
-print str(len(test)) + " Test Videos"
+print(str(len(train)) + " Training Videos")
+print(str(len(test)) + " Test Videos")
 
 
-# Read feature sizes from data 
+# Read feature sizes from data
 NUM_ENTITIES   = video_entity_vectors[video_entity_vectors.keys()[0]].shape[0]
 NUM_ACTIONS    = video_action_vectors[video_action_vectors.keys()[0]].shape[0]
 NUM_ATTRIBUTES = video_attribute_vectors[video_attribute_vectors.keys()[0]].shape[0]
@@ -146,6 +148,6 @@ correct_sentence = []
 for word in Y_test[0]:
 	correct_sentence.append(vocabulary[sample(word)][1])
 
-print " ".join(correct_sentence)
-print " ".join(greedy_sentence)
-print " ".join(hot_sentence)
+print(" ".join(correct_sentence))
+print(" ".join(greedy_sentence))
+print(" ".join(hot_sentence))

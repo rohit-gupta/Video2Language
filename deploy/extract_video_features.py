@@ -6,6 +6,7 @@ from keras.applications.resnet50 import ResNet50
 from keras.applications.resnet50 import preprocess_input
 from keras.layers.core import Lambda
 from keras import backend as K
+from __future__ import print_function
 
 import numpy as np
 from glob import glob
@@ -57,7 +58,7 @@ for idx,frame_file in enumerate(frame_files):
         frame_data.append(preprocess_image(frame_file)[0])
 actual_frame_length = len(frame_data)
 # If Video is shorter than 8 seconds repeat the short video
-if len(frame_data) < NUM_FRAMES: 
+if len(frame_data) < NUM_FRAMES:
     if NUM_FRAMES/len(frame_data) > 1: # Video is < 1/2 of 8 Seconds
         num_repeats = NUM_FRAMES/len(frame_data) - 1
         for _ in range(num_repeats):
@@ -68,7 +69,7 @@ if len(frame_data) < NUM_FRAMES:
         for itr in range(0, NUM_FRAMES -len(frame_data)):
             frame_data.append(frame_data[itr])
 if len(frame_data) != NUM_FRAMES:
-    print og_frame_length, num_repeats, dup_frame_length, len(frame_data)
+    print(og_frame_length, num_repeats, dup_frame_length, len(frame_data))
     raise Exception, 'Incorrect number of frames sampled'
 
 frame_data = np.array(frame_data)
@@ -91,6 +92,6 @@ feature_extract_model.compile(loss='binary_crossentropy', optimizer='rmsprop', m
 predicted_features = feature_extract_model.predict_on_batch(video_frames)
 
 video_feature_vectors = {}
-video_feature_vectors[video_name] = predicted_features[0] 
+video_feature_vectors[video_name] = predicted_features[0]
 
 pickle.dump(video_feature_vectors, open("average_frame_features.pickle", "wb"))

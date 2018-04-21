@@ -1,6 +1,7 @@
 from random import shuffle
 import numpy as np
 import pickle
+from __future__ import print_function
 
 folder = "../Youtube2Text/youtubeclips-dataset/"
 
@@ -46,9 +47,9 @@ TRUNCATED_CAPTION_LEN = 10 + 2
 MIN_CAPTION_LEN = 4 + 2
 NUM_WORDS += 3 # <BOS>, <EOS>, <unk>
 
-print "MAX_CAPTION_LEN: ", MAX_CAPTION_LEN
-print "MEDIAN_CAPTION_LEN: ", TRUNCATED_CAPTION_LEN
-print "NUM_WORDS: ", NUM_WORDS
+print("MAX_CAPTION_LEN: ", MAX_CAPTION_LEN)
+print("MEDIAN_CAPTION_LEN: ", TRUNCATED_CAPTION_LEN)
+print("NUM_WORDS: ", NUM_WORDS)
 
 def one_hot_encode(sentence,lexicon):
 	sentence = sentence[:TRUNCATED_CAPTION_LEN]
@@ -77,4 +78,4 @@ pickle.dump(encoded_captions, open("encoded_captions_unverified_len_4_10.p", "wb
 # 	coded_string = []
 # 	for encoded_word in encoded_captions[idx][1]:
 # 		coded_string.append(vocabulary[np.argmax(encoded_word)])
-# 	print " ".join(coded_string)
+# 	print(" ".join(coded_string))

@@ -8,7 +8,8 @@ from keras.callbacks import CSVLogger, ModelCheckpoint
 import numpy as np
 from glob import glob
 import h5py
-import pickle 
+import pickle
+from __future__ import print_function
 
 import argparse
 
@@ -62,7 +63,7 @@ count = 0
 
 for video in sorted(videos):
 	if count % 100 == 0:
-		print int(100*round(count/float(len(videos)),2)), "% Data Loaded"
+		print(int(100*round(count/float(len(videos)),2)), "% Data Loaded")
 	video_name = (video.split("/")[-1]).split(".")[0] # Extract video name from path
 	fps = video_fps[video_name]
 	frame_files = sorted(glob(video +"/*.jpg"))
@@ -76,7 +77,7 @@ for video in sorted(videos):
 			frame_data.append(preprocess_image(frame_file)[0])
 	actual_frame_length = len(frame_data)
 	# If Video is shorter than 8 seconds repeat the short video
-	if len(frame_data) < NUM_FRAMES: 
+	if len(frame_data) < NUM_FRAMES:
 		if NUM_FRAMES/len(frame_data) > 1: # Video is < 1/2 of 8 Seconds
 			num_repeats = NUM_FRAMES/len(frame_data) - 1
 			for _ in range(num_repeats):
@@ -87,7 +88,7 @@ for video in sorted(videos):
 			for itr in range(0, NUM_FRAMES -len(frame_data)):
 				frame_data.append(frame_data[itr])
 	if len(frame_data) != NUM_FRAMES:
-		print og_frame_length, num_repeats, dup_frame_length, len(frame_data)
+		print(og_frame_length, num_repeats, dup_frame_length, len(frame_data))
 		raise Exception, 'Incorrect number of frames sampled'
 	frame_data = np.array(frame_data)
 	if video_name in test:
@@ -127,7 +128,7 @@ for layer in convnet_model.layers:
     layer.trainable = False
 
 encoded_frame_sequence = TimeDistributed(convnet_model)(video_input)
-encoded_video = LSTM(256)(encoded_frame_sequence) 
+encoded_video = LSTM(256)(encoded_frame_sequence)
 output = Dense(NUM_ACTIONS, activation='sigmoid')(encoded_video)
 
 action_model = Model(inputs=video_input, outputs=output)
@@ -149,11 +150,11 @@ preds = action_model.predict(test_frames,batch_size=16)
 
 # from sklearn.metrics import hamming_loss
 
-# preds_binarized = preds 
+# preds_binarized = preds
 # preds_binarized[preds>=0.5] = 1
 # preds_binarized[preds<0.5] = 0
 
-# print "Hamming Loss: ", hamming_loss(test_tags, preds_binarized)
+# print("Hamming Loss: ", hamming_loss(test_tags, preds_binarized))
 
 
 from sklearn.metrics import precision_recall_curve
@@ -170,7 +171,7 @@ average_precision = dict()
 # A "micro-average": quantifying score on all classes jointly
 precision["micro"], recall["micro"], thresholds = precision_recall_curve(test_tags.ravel(), preds.ravel())
 average_precision["micro"] = average_precision_score(test_tags, preds, average="micro")
-print 'Average precision score, micro-averaged over all classes:', average_precision["micro"]
+print('Average precision score, micro-averaged over all classes:', average_precision["micro"])
 
 # Plot uAP v Recall curve
 import matplotlib.pyplot as plt
@@ -186,4 +187,4 @@ plt.xlim([0.0, 1.0])
 plt.title('Average precision score, micro-averaged over all classes: AUC={0:0.2f}'.format(average_precision["micro"]))
 plt.savefig('PR_Curve.png')
 
-print thresholds
+print(thresholds)

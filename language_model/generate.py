@@ -4,6 +4,7 @@ import copy
 import json
 import argparse
 from model import get_language_model
+from __future__ import print_function
 
 folder = "../YouTube2Text/youtubeclips-dataset/"
 
@@ -55,7 +56,7 @@ video_frame_features = pickle.load(open("../frame_features/average_frame_feature
 # available_vids = set(video_entity_vectors.keys()).intersection(set(video_action_vectors.keys()).intersection(set(video_attribute_vectors.keys()).intersection(set(video_frame_features.keys()))))
 # test = list(set(test).intersection(available_vids))
 
-# Read feature sizes from data 
+# Read feature sizes from data
 NUM_ENTITIES   = video_entity_vectors[video_entity_vectors.keys()[0]].shape[0]
 NUM_ACTIONS    = video_action_vectors[video_action_vectors.keys()[0]].shape[0]
 NUM_ATTRIBUTES = video_attribute_vectors[video_attribute_vectors.keys()[0]].shape[0]
@@ -74,7 +75,7 @@ vocabulary = pickle.load(open("vocabulary_10.p", "rb"))
 vocabulary_words = [x[1] for x in vocabulary]
 
 #Load the model with pre-trained weights
-TRUNCATED_CAPTION_LEN = 15 + 2 
+TRUNCATED_CAPTION_LEN = 15 + 2
 NUM_PREV_WORDS = TRUNCATED_CAPTION_LEN - 1
 EMBEDDING_DIM = 256
 VOCABULARY_SIZE = len(vocabulary_words)
@@ -133,7 +134,7 @@ for video in test:
 	correct_annotations['images'].append({'license': 1, 'url': 'https://www.youtube.com/watch?v=' + video, 'file_name': video+".avi", 'height': 360, 'width': 640, 'date_captured': u'2013-11-14 11:18:45', 'id': test.index(video)})
 
 
-count = 0 
+count = 0
 for video,caption in all_captions:
 	if video in test:
 		correct_annotations['annotations'].append({"caption": caption, "id": count, "image_id": test.index(video), "vid_id": video})
@@ -146,7 +147,7 @@ def indices(k):
     for x in range(k):
         for y in range(k):
             combos.append((x,y))
-    
+
     return combos
 
 
@@ -155,7 +156,7 @@ def greedy_search(captioning_model, prev_words_input, other_inputs):
         predictions = captioning_model.predict(other_inputs + [prev_words_input])
         for idx,video in enumerate(test):
             prev_words_input[idx][itr+1] = np.argmax(predictions[idx])
-    
+
     return prev_words_input
 
 
@@ -163,7 +164,7 @@ def beam_search(captioning_model, prev_words_input, other_inputs, k):
     top_k_predictions = [copy.deepcopy(prev_words_input) for _ in range(k)]
     top_k_score = np.array([[0.0]*top_k_predictions[0].shape[0]]*k)
 
-    # First Iteration 
+    # First Iteration
     predictions = captioning_model.predict(other_inputs + [prev_words_input])
     for idx,video in enumerate(test):
         for version in range(k):
@@ -172,9 +173,9 @@ def beam_search(captioning_model, prev_words_input, other_inputs, k):
 
     for itr in range(2,NUM_PREV_WORDS):
         top_k_copy = copy.deepcopy(top_k_predictions)
-        print top_k_predictions[0][0]
-        print top_k_predictions[1][0]
-        print top_k_predictions[2][0]
+        print(top_k_predictions[0][0])
+        print(top_k_predictions[1][0])
+        print(top_k_predictions[2][0])
         predictions = [captioning_model.predict(other_inputs + [top_k_predictions[version]])  for version in range(k)]
         for idx,video in enumerate(test):
             scores = []
@@ -187,17 +188,17 @@ def beam_search(captioning_model, prev_words_input, other_inputs, k):
                 top_k_predictions[num][idx][itr] = np.argsort(predictions[version][idx])[-(lookahead+1)]
                 top_k_predictions[num][idx][:itr] = top_k_copy[version][idx][:itr]
                 top_k_score[num][idx] = scores[top_id]
-    
+
     return top_k_predictions, top_k_score
 
 preds, scores = beam_search(beam_model, X_prev_words_begin, [X_ent_test, X_act_test, X_att_test, X_vgg_test], 3)
 
-print len(preds), "x", preds[0].shape
-print len(scores),"x", scores[0].shape
+print(len(preds), "x", preds[0].shape)
+print(len(scores),"x", scores[0].shape)
 
 preds = preds[-1]
 
-print scores[:,0]
+print(scores[:,0])
 #scores = scores[-1]
 
 
@@ -231,20 +232,20 @@ for idx,video in enumerate(test):
 greedy_captions.write(json.dumps(greedy_annotations, indent=4, sort_keys=True))
 greedy_captions.close()
 
-# print "python score.py -r annotations/correct_captions_ref.json -t", "results/greedy_search_"+results.model_file+results.tag_type+".json"
-# print "python score.py -r annotations/correct_captions_ref.json -t", "results/beam_search_"+results.model_file+results.tag_type+".json"
+# print("python score.py -r annotations/correct_captions_ref.json -t", "results/greedy_search_"+results.model_file+results.tag_type+".json")
+# print("python score.py -r annotations/correct_captions_ref.json -t", "results/beam_search_"+results.model_file+results.tag_type+".json")
 
 
 # hot_captions = open("scoring_results/hot_captions_batched.sgm","w")
-# print >>hot_captions, '<tstset trglang="en" setid="y2txt" srclang="any">'
-# print >>hot_captions, '<doc sysid="langmodel" docid="y2txt" genre="vidcap" origlang="en">'
-# print >>hot_captions, '<p>'
+# print(>>hot_captions, '<tstset trglang="en" setid="y2txt" srclang="any">')
+# print(>>hot_captions, '<doc sysid="langmodel" docid="y2txt" genre="vidcap" origlang="en">')
+# print(>>hot_captions, '<p>')
 # for idx,video in enumerate(test):
 #         hot_sentence = []
 #         for word in preds[idx]:
 #             hot_sentence.append(vocabulary[sample(word, 0.1)][1])
-#         print >>hot_captions, '<seg id="'+str(test.index(video))+'">' + " ".join(hot_sentence) + '</seg>'
-# print >>hot_captions, '</p>'
-# print >>hot_captions, '</doc>'
-# print >>hot_captions, '</tstset>'
+#         print(>>hot_captions, '<seg id="'+str(test.index(video))+'">' + " ".join(hot_sentence) + '</seg>')
+# print(>>hot_captions, '</p>')
+# print(>>hot_captions, '</doc>')
+# print(>>hot_captions, '</tstset>')
 # hot_captions.close()

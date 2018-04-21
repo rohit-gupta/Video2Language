@@ -1,5 +1,6 @@
 import pickle
 import numpy as np
+from __future__ import print_function
 
 folder = "../Youtube2Text/youtubeclips-dataset/"
 
@@ -20,7 +21,7 @@ video_frame_features = pickle.load(open("../frame_features.pickle", "rb"))
 available_vids = set(video_entity_vectors.keys()).intersection(set(video_action_vectors.keys()).intersection(set(video_attribute_vectors.keys()).intersection(set(video_frame_features.keys()))))
 test = list(set(test).intersection(available_vids))
 
-# Read feature sizes from data 
+# Read feature sizes from data
 NUM_ENTITIES   = video_entity_vectors[video_entity_vectors.keys()[0]].shape[0]
 NUM_ACTIONS    = video_action_vectors[video_action_vectors.keys()[0]].shape[0]
 NUM_ATTRIBUTES = video_attribute_vectors[video_attribute_vectors.keys()[0]].shape[0]
@@ -110,44 +111,44 @@ def sample(preds, temperature=1.0):
 
 # Write correct caption file
 # correct_captions = open("correct_captions_all_data_finetuned.sgm","w")
-# print >>correct_captions, '<refset setid="y2txt" srclang="any" trglang="en">'
-# print >>correct_captions, '<doc sysid="ref" docid="y2txt" genre="vidcap" origlang="en">'
-# print >>correct_captions, '<p>'
+# print(>>correct_captions, '<refset setid="y2txt" srclang="any" trglang="en">')
+# print(>>correct_captions, '<doc sysid="ref" docid="y2txt" genre="vidcap" origlang="en">')
+# print(>>correct_captions, '<p>')
 # for video,caption in all_captions:
 #     if video in test:
 #         correct_sentence = []
-#         print >>correct_captions, '<seg id="'+str(test.index(video))+'">' + caption + '</seg>'
-# print >>correct_captions, '</p>'
-# print >>correct_captions, '</doc>'
-# print >>correct_captions, '</refset>'
+#         print(>>correct_captions, '<seg id="'+str(test.index(video))+'">' + caption + '</seg>')
+# print(>>correct_captions, '</p>')
+# print(>>correct_captions, '</doc>')
+# print(>>correct_captions, '</refset>')
 # correct_captions.close()
 
 
 
 greedy_captions = open("scoring_results/greedy_captions_batched.sgm","w")
-print >>greedy_captions, '<tstset trglang="en" setid="y2txt" srclang="any">'
-print >>greedy_captions, '<doc sysid="langmodel" docid="y2txt" genre="vidcap" origlang="en">'
-print >>greedy_captions, '<p>'
+print(>>greedy_captions, '<tstset trglang="en" setid="y2txt" srclang="any">')
+print(>>greedy_captions, '<doc sysid="langmodel" docid="y2txt" genre="vidcap" origlang="en">')
+print(>>greedy_captions, '<p>')
 for idx,video in enumerate(test):
         greedy_sentence = []
         for word in preds[idx]:
             greedy_sentence.append(vocabulary[np.argmax(word)][1])
-        print >>greedy_captions, '<seg id="'+str(test.index(video))+'">' + " ".join(greedy_sentence) + '</seg>'
-print >>greedy_captions, '</p>'
-print >>greedy_captions, '</doc>'
-print >>greedy_captions, '</tstset>'
+        print(>>greedy_captions, '<seg id="'+str(test.index(video))+'">' + " ".join(greedy_sentence) + '</seg>')
+print(>>greedy_captions, '</p>')
+print(>>greedy_captions, '</doc>')
+print(>>greedy_captions, '</tstset>')
 greedy_captions.close()
 
 hot_captions = open("scoring_results/hot_captions_batched.sgm","w")
-print >>hot_captions, '<tstset trglang="en" setid="y2txt" srclang="any">'
-print >>hot_captions, '<doc sysid="langmodel" docid="y2txt" genre="vidcap" origlang="en">'
-print >>hot_captions, '<p>'
+print(>>hot_captions, '<tstset trglang="en" setid="y2txt" srclang="any">')
+print(>>hot_captions, '<doc sysid="langmodel" docid="y2txt" genre="vidcap" origlang="en">')
+print(>>hot_captions, '<p>')
 for idx,video in enumerate(test):
         hot_sentence = []
         for word in preds[idx]:
             hot_sentence.append(vocabulary[sample(word, 0.1)][1])
-        print >>hot_captions, '<seg id="'+str(test.index(video))+'">' + " ".join(hot_sentence) + '</seg>'
-print >>hot_captions, '</p>'
-print >>hot_captions, '</doc>'
-print >>hot_captions, '</tstset>'
+        print(>>hot_captions, '<seg id="'+str(test.index(video))+'">' + " ".join(hot_sentence) + '</seg>')
+print(>>hot_captions, '</p>')
+print(>>hot_captions, '</doc>')
+print(>>hot_captions, '</tstset>')
 hot_captions.close()

@@ -6,6 +6,7 @@ from keras.applications.resnet50 import ResNet50
 from keras.applications.resnet50 import preprocess_input
 from keras.layers.core import Lambda
 from keras import backend as K
+from __future__ import print_function
 
 import numpy as np
 from glob import glob
@@ -58,7 +59,7 @@ count = 0
 
 for video in sorted(videos):
 	if count % 100 == 0:
-		print int(100*round(count/float(len(videos)),2)), "% Data Loaded"
+		print(int(100*round(count/float(len(videos)),2)), "% Data Loaded")
 	video_name = (video.split("/")[-1]).split(".")[0] # Extract video name from path
 	fps = video_fps[video_name]
 	frame_files = sorted(glob(video +"/*.jpg"))
@@ -72,7 +73,7 @@ for video in sorted(videos):
 			frame_data.append(preprocess_image(frame_file)[0])
 	actual_frame_length = len(frame_data)
 	# If Video is shorter than 8 seconds repeat the short video
-	if len(frame_data) < NUM_FRAMES: 
+	if len(frame_data) < NUM_FRAMES:
 		if NUM_FRAMES/len(frame_data) > 1: # Video is < 1/2 of 8 Seconds
 			num_repeats = NUM_FRAMES/len(frame_data) - 1
 			for _ in range(num_repeats):
@@ -83,7 +84,7 @@ for video in sorted(videos):
 			for itr in range(0, NUM_FRAMES -len(frame_data)):
 				frame_data.append(frame_data[itr])
 	if len(frame_data) != NUM_FRAMES:
-		print og_frame_length, num_repeats, dup_frame_length, len(frame_data)
+		print(og_frame_length, num_repeats, dup_frame_length, len(frame_data))
 		raise Exception, 'Incorrect number of frames sampled'
 	frame_data = np.array(frame_data)
 	video_frames.append(frame_data)
@@ -110,6 +111,6 @@ predicted_features = feature_extract_model.predict(video_frames, batch_size=16)
 video_feature_vectors = {}
 
 for idx,video in enumerate(video_names):
-	video_feature_vectors[video] = predicted_features[idx] 
+	video_feature_vectors[video] = predicted_features[idx]
 
 pickle.dump(video_feature_vectors, open("average_frame_features.pickle", "wb"))

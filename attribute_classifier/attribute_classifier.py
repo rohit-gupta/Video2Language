@@ -1,6 +1,7 @@
 #import numpy as np
 import pickle
 import numpy as np
+from __future__ import print_function
 
 folder = "../Youtube2Text/youtubeclips-dataset/"
 
@@ -36,7 +37,7 @@ Y_test = np.array([video_attribute_vectors[video] for video in test])
 num_attributes = video_attribute_vectors[video_attribute_vectors.keys()[0]].shape[0]
 feature_size = video_frame_features[video_frame_features.keys()[0]].shape[1]
 
-print "Training attribute classifier model ..."
+print("Training attribute classifier model ...")
 
 # Define the attribute classifier model
 from keras.models import Sequential
@@ -69,8 +70,8 @@ preds = attribute_model.predict(X_test)
 
 from sklearn.metrics import hamming_loss
 
-preds_binarized = preds 
+preds_binarized = preds
 preds_binarized[preds>=0.5] = 1
 preds_binarized[preds<0.5] = 0
 
-print "Hamming Loss: ", hamming_loss(Y_test, preds_binarized)
+print("Hamming Loss: ", hamming_loss(Y_test, preds_binarized))

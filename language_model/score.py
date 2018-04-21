@@ -1,5 +1,6 @@
 from pycocotools.coco import COCO
 from pycocoevalcap.eval import COCOEvalCap
+from __future__ import print_function
 
 import json
 from json import encoder
@@ -21,4 +22,4 @@ cocoEval.evaluate()
 
 # print output evaluation scores
 for metric, score in cocoEval.eval.items():
-    print '%s: %.3f'%(metric, score)
+    print('%s: %.3f'%(metric, score))

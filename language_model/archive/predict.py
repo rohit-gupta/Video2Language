@@ -1,5 +1,6 @@
 import pickle
 import numpy as np
+from __future__ import print_function
 
 folder = "../Youtube2Text/youtubeclips-dataset/"
 
@@ -20,7 +21,7 @@ video_frame_features = pickle.load(open("../frame_features.pickle", "rb"))
 available_vids = set(video_entity_vectors.keys()).intersection(set(video_action_vectors.keys()).intersection(set(video_attribute_vectors.keys()).intersection(set(video_frame_features.keys()))))
 test = set(test).intersection(available_vids)
 
-# Read feature sizes from data 
+# Read feature sizes from data
 NUM_ENTITIES   = video_entity_vectors[video_entity_vectors.keys()[0]].shape[0]
 NUM_ACTIONS    = video_action_vectors[video_action_vectors.keys()[0]].shape[0]
 NUM_ATTRIBUTES = video_attribute_vectors[video_attribute_vectors.keys()[0]].shape[0]
@@ -104,8 +105,8 @@ for prediction in preds:
     for word in prediction:
             hot_sentence.append(vocabulary[sample(word)][1])
             greedy_sentence.append(vocabulary[np.argmax(word)][1])
-    print >>greedy_captions,  " ".join(greedy_sentence)
-    print >>hot_captions,     " ".join(hot_sentence)
+    print(>>greedy_captions,  " ".join(greedy_sentence))
+    print(>>hot_captions,     " ".join(hot_sentence))
 
 
 
@@ -113,9 +114,8 @@ for sentence in Y_test:
     correct_sentence = []
     for word in sentence:
         correct_sentence.append(vocabulary[np.argmax(word)][1])
-    print >>correct_captions, " ".join(correct_sentence)
+    print(>>correct_captions, " ".join(correct_sentence))
 
 greedy_captions.close()
 hot_captions.close()
 correct_captions.close()
-

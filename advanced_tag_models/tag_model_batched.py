@@ -6,6 +6,7 @@ from keras.preprocessing import image
 from keras.applications.resnet50 import preprocess_input
 from keras.callbacks import CSVLogger, ModelCheckpoint, ReduceLROnPlateau
 from keras import regularizers
+from __future__ import print_function
 
 
 import numpy as np
@@ -74,7 +75,7 @@ count = 0
 
 for video in sorted(videos):
 	if count % 100 == 0:
-		print int(100*round(count/float(len(videos)),2)), "% Data Loaded"
+		print(int(100*round(count/float(len(videos)),2)), "% Data Loaded")
 	video_name = (video.split("/")[-1]).split(".")[0] # Extract video name from path
 	fps = video_fps[video_name]
 	frame_files = sorted(glob(video +"/*.jpg"))
@@ -88,7 +89,7 @@ for video in sorted(videos):
 			frame_data.append(preprocess_image(frame_file)[0])
 	actual_frame_length = len(frame_data)
 	# If Video is shorter than 8 seconds repeat the short video
-	if len(frame_data) < NUM_FRAMES: 
+	if len(frame_data) < NUM_FRAMES:
 		if NUM_FRAMES/len(frame_data) > 1: # Video is < 1/2 of 8 Seconds
 			num_repeats = NUM_FRAMES/len(frame_data) - 1
 			for _ in range(num_repeats):
@@ -99,7 +100,7 @@ for video in sorted(videos):
 			for itr in range(0, NUM_FRAMES -len(frame_data)):
 				frame_data.append(frame_data[itr])
 	if len(frame_data) != NUM_FRAMES:
-		print og_frame_length, num_repeats, dup_frame_length, len(frame_data)
+		print(og_frame_length, num_repeats, dup_frame_length, len(frame_data))
 		raise Exception, 'Incorrect number of frames sampled'
 	frame_data = np.array(frame_data)
 	if video_name in test:
@@ -215,13 +216,13 @@ test_preds_binarized = copy.deepcopy(test_preds)
 test_preds_binarized[test_preds>=0.5] = 1
 test_preds_binarized[test_preds<0.5] = 0
 
-print "Hamming Loss: ", hamming_loss(test_tags, test_preds_binarized)
+print("Hamming Loss: ", hamming_loss(test_tags, test_preds_binarized))
 
 augmented_test_preds_binarized = copy.deepcopy(augmented_test_preds)
 augmented_test_preds_binarized[augmented_test_preds>=0.5] = 1
 augmented_test_preds_binarized[augmented_test_preds<0.5] = 0
 
-print "Hamming Loss For Augmented Preds: ", hamming_loss(test_tags, augmented_test_preds_binarized)
+print("Hamming Loss For Augmented Preds: ", hamming_loss(test_tags, augmented_test_preds_binarized))
 
 # Calculate Micro Averaged Precision
 # For each class
@@ -235,7 +236,7 @@ average_precision = dict()
 # A "micro-average": quantifying score on all classes jointly
 precision["micro"], recall["micro"], _ = precision_recall_curve(test_tags.ravel(), test_preds.ravel())
 average_precision["micro"] = average_precision_score(test_tags, test_preds, average="micro")
-print 'Average precision score, micro-averaged over all classes:', average_precision["micro"]
+print('Average precision score, micro-averaged over all classes:', average_precision["micro"])
 
 # Plot uAP v Recall curve
 plt.switch_backend("agg")
@@ -261,7 +262,7 @@ average_precision = dict()
 # A "micro-average": quantifying score on all classes jointly
 precision["micro"], recall["micro"], _ = precision_recall_curve(test_tags.ravel(), augmented_test_preds.ravel())
 average_precision["micro"] = average_precision_score(test_tags, augmented_test_preds, average="micro")
-print 'Average precision score, micro-averaged over all classes:', average_precision["micro"]
+print('Average precision score, micro-averaged over all classes:', average_precision["micro"])
 
 # Plot uAP v Recall curve
 plt.switch_backend("agg")

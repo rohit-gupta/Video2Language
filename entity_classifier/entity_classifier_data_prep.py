@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 import sys
+from __future__ import print_function
 
 folder = "../YouTube2Text/youtubeclips-dataset/"
 entities_file = "../tag_generator/entity_long.txt"
@@ -17,9 +18,9 @@ MIN_COUNT=50
 entities = []
 for word,count in entities_all:
 	if int(count) >= MIN_COUNT:
-		entities.append(word) 
+		entities.append(word)
 
-print "Using " + str(len(entities)) + " entities out of total " + str(len(entities_all)) + " entities"
+print("Using " + str(len(entities)) + " entities out of total " + str(len(entities_all)) + " entities")
 
 # read in cleaned up captions
 with open(folder+captions_file) as f:

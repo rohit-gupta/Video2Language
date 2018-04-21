@@ -4,6 +4,7 @@ import re
 import pickle
 import argparse
 from glob import glob
+from __future__ import print_function
 
 import numpy as np
 from keras.preprocessing import image
@@ -36,7 +37,7 @@ def load_videos(video_ids, video_folder, video_fps_dict):
 				frame_data.append(preprocess_image(frame_file)[0])
 		actual_frame_length = len(frame_data)
 		# If Video is shorter than 8 seconds repeat the short video
-		if len(frame_data) < NUM_FRAMES: 
+		if len(frame_data) < NUM_FRAMES:
 			if NUM_FRAMES/len(frame_data) > 1: # Video is < 1/2 of 10 Seconds
 				num_repeats = NUM_FRAMES/len(frame_data) - 1
 				for _ in range(num_repeats):
@@ -47,7 +48,7 @@ def load_videos(video_ids, video_folder, video_fps_dict):
 				for itr in range(0, NUM_FRAMES -len(frame_data)):
 					frame_data.append(frame_data[itr])
 		if len(frame_data) != NUM_FRAMES:
-			print actual_frame_length, num_repeats, dup_frame_length, len(frame_data)
+			print(actual_frame_length, num_repeats, dup_frame_length, len(frame_data))
 			raise Exception, 'Incorrect number of frames sampled'
 		frame_data = np.array(frame_data)
 		frames.append(frame_data)
@@ -101,7 +102,7 @@ videos = sorted(videos)
 # with open(test_annotations_file) as data_file:
 # 			test_data = json.load(data_file)
 
-# print len(train_data['sentences']), len(test_data['sentences'])
+# print(len(train_data['sentences']), len(test_data['sentences']))
 
 # captions = train_data['sentences'] + test_data['sentences']
 # sorted_captions = sorted(captions, key=lambda k:  int(re.split('(\d+)',k['video_id'])[-2]))
@@ -114,7 +115,7 @@ all_videos_generator = MSVDSequence(video_names, video_folder=videos_folder, fps
 
 NUM_STEPS = len(all_videos_generator)
 
-print "Frames will be extracted for", NUM_STEPS * BATCH_SIZE, "Videos"
+print("Frames will be extracted for", NUM_STEPS * BATCH_SIZE, "Videos")
 
 
 from keras.applications.resnet50 import ResNet50
@@ -158,8 +159,6 @@ video_feature_vectors = {}
 
 for idx,video in enumerate(video_names):
 	if idx < len(predicted_features):
-		video_feature_vectors[video] = predicted_features[idx] 
+		video_feature_vectors[video] = predicted_features[idx]
 
 pickle.dump(video_feature_vectors, open("average_frame_features.pickle", "wb"))
-
-

@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 import argparse
+from __future__ import print_function
 
 parser = argparse.ArgumentParser(description='Generate Bleu Score on YouTube2Text.')
 parser.add_argument(dest='testfile', metavar='XYZ.tst', type=argparse.FileType('r'), help='Generated Captions file to test')
@@ -65,16 +66,15 @@ from nltk.translate.bleu_score import corpus_bleu,sentence_bleu
 list_of_references_bleu = []
 hypotheses_bleu = []
 
-#print "VideoID,Bleu4Score"
+#print("VideoID,Bleu4Score")
 # iterate over each test video
 for idx in range(len(hypotheses)):
 	for refno,reference in enumerate(references):
 		if references[refno][0][1] == hypotheses[idx][0][1]: # Match video IDs
-			#print hypotheses[idx][0][1], sentence_bleu(references[refno][1], hypotheses[idx][1])
+			#printhypotheses[idx][0][1], sentence_bleu(references[refno][1], hypotheses[idx][1])
 			list_of_references_bleu.append(references[refno][1])
 			hypotheses_bleu.append(hypotheses[idx][1])
 
-#print "Corpus,", corpus_bleu(list_of_references_bleu, hypotheses_bleu)
+#print("Corpus,", corpus_bleu(list_of_references_bleu, hypotheses_bleu))
 
-print "B@1,B@2,B@3,B@4", corpus_bleu(list_of_references_bleu, hypotheses_bleu,weights = [1.0]), corpus_bleu(list_of_references_bleu, hypotheses_bleu,weights = (0.5, 0.5)),corpus_bleu(list_of_references_bleu, hypotheses_bleu,weights = (0.33333333, 0.33333333, 0.33333333)),corpus_bleu(list_of_references_bleu, hypotheses_bleu)
-
+print("B@1,B@2,B@3,B@4", corpus_bleu(list_of_references_bleu, hypotheses_bleu,weights = [1.0]), corpus_bleu(list_of_references_bleu, hypotheses_bleu,weights = (0.5, 0.5)),corpus_bleu(list_of_references_bleu, hypotheses_bleu,weights = (0.33333333, 0.33333333, 0.33333333)),corpus_bleu(list_of_references_bleu, hypotheses_bleu))
